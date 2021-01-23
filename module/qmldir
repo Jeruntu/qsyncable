@@ -1,0 +1,4 @@
+module QSyncable
+plugin qsyncable
+classname QmlQSyncablePlugin
+typeinfo qsyncable.qmltypes

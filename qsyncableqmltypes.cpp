@@ -1,4 +1,4 @@
-#include <QtQml>
+#include "qsyncableqmltypes.h"
 #include "qsjsonlistmodel.h"
 #include "qsuuid.h"
 #include "qsyncableqmlwrapper.h"
@@ -13,10 +13,16 @@ static QObject *provider(QQmlEngine *engine, QJSEngine *scriptEngine) {
     return object;
 }
 
-static void registerTypes() {
-    qmlRegisterType<QSJsonListModel>("QSyncable", 1, 0, "JsonListModel");
-    qmlRegisterSingletonType<QSUuid>("QSyncable", 1, 0, "Uuid", provider<QSUuid>);
-    qmlRegisterSingletonType<QSyncableQmlWrapper>("QSyncable", 1, 0, "QSyncable", provider<QSyncableQmlWrapper>);
+void registerQsTypes(const char *uri, int major, int minor) {
+    qmlRegisterType<QSJsonListModel>(uri, major, minor, "JsonListModel");
+    qmlRegisterSingletonType<QSUuid>(uri, major, minor, "Uuid", provider<QSUuid>);
+    qmlRegisterSingletonType<QSyncableQmlWrapper>(uri, major, minor, "QSyncable", provider<QSyncableQmlWrapper>);
 }
 
+static void registerTypes() {
+    registerQsTypes("QSyncable", 1, 0);
+}
+
+#ifndef QML_PLUGIN
 Q_COREAPP_STARTUP_FUNCTION(registerTypes)
+#endif
