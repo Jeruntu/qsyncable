@@ -121,6 +121,51 @@ Or:
 qpm install com.github.benlau.qsyncable
 ```
 
+Plugin
+------
+
+1. Clone or download this repository
+2. Build and install the plugin target, example with msvc2019 and Ninja generator:
+
+```powershell
+PS $Env:QTDIR='C:/Qt/5.15.2/msvc2019_64'
+PS cd qsyncable
+PS md release_build
+PS cmake -S . -B release_build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$Env:QTDIR" -DCMAKE_INSTALL_PREFIX='plugins'
+PS cmake --build release_build --target QSyncablePlugin
+PS cmake --build release_build --target install
+```
+
+To create a debug plugin, repeat the steps above, but create a different
+build directory and set -DCMAKE_BUILD_TYPE=Debug. The installed qml module has the
+following layout:
+
+```text
+plugins/
+├── qml_module/
+│   └── QSyncable/
+│       ├── qsyncable.qmltypes
+│       ├── qmldir
+│       ├── qsyncable.dll
+│       └── qsyncabled.dll
+└── lib/
+    └── cmake/
+        └── QSyncable/
+            ├── QSyncableConfig.cmake
+            └── QSyncableConfigVersion.cmake
+```
+
+Even though the plugin is build with cmake, your project can be using any build system.
+It is enough to add the `qml_module` path to the import paths of your qml application.
+The cmake package that is generated is optional and just for convenience. It can be
+used in a cmake project to get the module name and path. For example to set the
+QML_IMPORT_PATH:
+
+```cmake
+find_package(QSyncable 1.0 REQUIRED)
+set(QML_IMPORT_PATH "${QSyncable_QML_MODULE_PATH};${OTHER_IMPORT_PATHS}" CACHE STRING "Extra qml import paths" FORCE)
+```
+
 Class Reference
 ---------------
 
